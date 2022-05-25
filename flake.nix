@@ -13,6 +13,7 @@
         devShell = mkShell {
           buildInputs = [
             nodejs-16_x
+            solc
           ];
         };
       });
