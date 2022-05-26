@@ -13,7 +13,7 @@ contract NotePortal {
     event NewNote(address indexed from, uint256 timestamp, string message);
 
     struct Note {
-        address waver;
+        address player;
         string note;
         uint256 timestamp;
     }
@@ -22,7 +22,7 @@ contract NotePortal {
 
     /*
      * This is an address => uint mapping, meaning I can associate an address with a number!
-     * In this case, I'll be storing the address with the last time the user waved at us.
+     * In this case, I'll be storing the address with the last time the user played a note.
      */
     mapping(address => uint256) public lastNotePlayedAt;
 
@@ -38,22 +38,19 @@ contract NotePortal {
         /*
          * We need to make sure the current timestamp is at least 15-minutes bigger than the last timestamp we stored
          */
-        require(
-            lastNotePlayedAt[msg.sender] + 15 minutes < block.timestamp,
-            "Wait 15m"
-        );
+        require(lastWavedAt[msg.sender] + 30 seconds < block.timestamp, "Must wait 30 seconds before playing another note.");
 
         /*
          * Update the current timestamp we have for the user
          */
         lastNotePlayedAt[msg.sender] = block.timestamp;
 
-        console.log("%s has waved!", msg.sender);
+        console.log("%s has played!", msg.sender);
 
         notes.push(Note(msg.sender, _message, block.timestamp));
 
         /*
-         * Generate a new seed for the next user that sends a wave
+         * Generate a new seed for the next user that sends a note
          */
         seed = (block.difficulty + block.timestamp + seed) % 100;
 
